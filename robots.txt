@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.web3rpc.io/sitemap.xml
