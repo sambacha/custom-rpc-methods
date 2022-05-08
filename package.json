@@ -1,0 +1,23 @@
+{
+  "name": "custom-evm-rpc-methods",
+  "version": "0.0.0",
+  "description": "Index of Custom EVM RPC Methods",
+  "scripts": {
+    "compile": "sh build.sh",
+    "deploy": " npx gh-pages -d public/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sambacha/custom-rpc-methods.git"
+  },
+  "keywords": [],
+  "author": "sam bacha",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/sambacha/custom-rpc-methods/issues"
+  },
+  "homepage": "https://github.com/sambacha/custom-rpc-methods#readme",
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
+  }
+}
