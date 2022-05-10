@@ -1,8 +1,8 @@
 ---
 title: Custom EVM RPC Methods Index
 extra:
-  date: 2022-05-09
-  version: "0.0.2"
+  date: 2022-05-10
+  version: "0.0.3"
 
 ---
 
