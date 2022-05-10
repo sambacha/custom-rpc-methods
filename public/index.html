@@ -20,8 +20,8 @@
   <article>
     <h1>Custom EVM RPC Methods Index</h1>
     <p class="status">
-      Version 0.0.2<br/>
-      (Last updated on May  9, 2022)<br/>
+      Version 0.0.3<br/>
+      (Last updated on May 10, 2022)<br/>
       See the <a href="https://github.com/sambacha/custom-evm-rpc">source</a>,
       file an <a href="https://github.com/sambacha/custom-evm-rpc/issues">issue</a>,
       or suggest a <a href="https://github.com/sambacha/custom-evm-rpc/pulls">change</a>.
@@ -242,6 +242,348 @@ bundleHash, and the signing address must be the same as the one who submitted th
   &quot;sentToMinersAt&quot;: &quot;2021-08-06T21:36:06.343Z&quot;
 }
 </span></code></pre>
+<h1 id="hardhat-network-reference">Hardhat Network Reference</h1>
+<h2 id="supported-hardforks">Supported hardforks</h2>
+<ul>
+<li>byzantium</li>
+<li>constantinople</li>
+<li>petersburg</li>
+<li>istanbul</li>
+<li>muirGlacier</li>
+<li>london</li>
+<li>arrowGlacier</li>
+</ul>
+<h2 id="config">Config</h2>
+<h3 id="supported-fields">Supported Fields</h3>
+<p>You can set the following fields on the <code>networks.hardhat</code> config:</p>
+<h4 id="chainid"><code>chainId</code></h4>
+<p>The chain ID number used by Hardhat Network's blockchain. Default value: <code>31337</code>.</p>
+<h4 id="from"><code>from</code></h4>
+<p>The address to use as default sender. If not present the first account of the Hardhat Network is used.</p>
+<h4 id="gas"><code>gas</code></h4>
+<p>Its value should be <code>&quot;auto&quot;</code> or a number. If a number is used, it will be the gas limit used by default in every transaction. If <code>&quot;auto&quot;</code> is used, the gas limit will be automatically estimated. Default value: the same value as <code>blockGasLimit</code>.</p>
+<p>Note that when using <code>ethers</code> this value will not be applied.</p>
+<h4 id="gasprice"><code>gasPrice</code></h4>
+<p>Its value should be <code>&quot;auto&quot;</code> or a number (in wei). This parameter behaves like <code>gas</code>. Default value: <code>&quot;auto&quot;</code>.</p>
+<p>Note that when using <code>ethers</code> this value will not be applied.</p>
+<h4 id="gasmultiplier"><code>gasMultiplier</code></h4>
+<p>A number used to multiply the results of gas estimation to give it some slack due to the uncertainty of the estimation process. Default value: <code>1</code>.</p>
+<p>Note that when using <code>ethers</code> this value will not be applied.</p>
+<h4 id="accounts"><code>accounts</code></h4>
+<p>This field can be configured as one of these:</p>
+<ul>
+<li>An object describing an [HD wallet]. This is the default. It can have any of the following fields:
+<ul>
+<li><code>mnemonic</code>: a 12 or 24 word mnemonic phrases as defined by BIP39. Default value: <code>&quot;test test test test test test test test test test test junk&quot;</code></li>
+<li><code>initialIndex</code>: The initial index to derive. Default value: <code>0</code>.</li>
+<li><code>path</code>: The HD parent of all the derived keys. Default value: <code>&quot;m/44'/60'/0'/0&quot;</code>.</li>
+<li><code>count</code>: The number of accounts to derive. Default value: <code>20</code>.</li>
+<li><code>accountsBalance</code>: string with the balance (in wei) assigned to every account derived. Default value: <code>&quot;10000000000000000000000&quot;</code> (10000 ETH).</li>
+<li><code>passphrase</code>: The passphrase for the wallet. Default value: empty string.</li>
+</ul>
+</li>
+<li>An array of the initial accounts that the Hardhat Network will create. Each of them must be an object with <code>privateKey</code> and <code>balance</code> fields.</li>
+</ul>
+<h4 id="blockgaslimit"><code>blockGasLimit</code></h4>
+<p>The block gas limit to use in Hardhat Network's blockchain. Default value: <code>30_000_000</code></p>
+<h4 id="hardfork"><code>hardfork</code></h4>
+<p>This setting changes how Hardhat Network works, to mimic Ethereum's mainnet at a given hardfork. It must be one of <code>&quot;byzantium&quot;</code>, <code>&quot;constantinople&quot;</code>, <code>&quot;petersburg&quot;</code>, <code>&quot;istanbul&quot;</code>, <code>&quot;muirGlacier&quot;</code>, <code>&quot;berlin&quot;</code>, <code>&quot;london&quot;</code> and <code>&quot;arrowGlacier&quot;</code>. Default value: <code>&quot;arrowGlacier&quot;</code></p>
+<h4 id="throwontransactionfailures"><code>throwOnTransactionFailures</code></h4>
+<p>A boolean that controls if Hardhat Network throws on transaction failures. If this value is <code>true</code>, Hardhat Network will throw <a href="../README.md#solidity-stack-traces">combined JavaScript and Solidity stack traces</a> on transaction failures. If it is <code>false</code>, it will return the failing transaction hash. In both cases the transactions are added into the blockchain. Default value: <code>true</code></p>
+<h4 id="throwoncallfailures"><code>throwOnCallFailures</code></h4>
+<p>A boolean that controls if Hardhat Network throws on call failures. If this value is <code>true</code>, Hardhat Network will throw <a href="../README.md#solidity-stack-traces">combined JavaScript and Solidity stack traces</a> when a call fails. If it is <code>false</code>, it will return the call's <code>return data</code>, which can contain a revert reason. Default value: <code>true</code></p>
+<h4 id="loggingenabled"><code>loggingEnabled</code></h4>
+<p>A boolean that controls if Hardhat Network logs every request or not. Default value: <code>false</code> for the in-process Hardhat Network provider, <code>true</code> for the Hardhat Network backed JSON-RPC server (i.e. the <code>node</code> task).</p>
+<h4 id="initialdate"><code>initialDate</code></h4>
+<p>An optional string setting the date of the blockchain. Valid values are <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse#Date_Time_String_Format">Javascript's date time strings</a>. Default value: the current date and time if not forking another network. When forking another network, the timestamp of the block you forked from, plus one second, is used.</p>
+<h4 id="allowunlimitedcontractsize"><code>allowUnlimitedContractSize</code></h4>
+<p>An optional boolean that disables the contract size limit imposed by the <a href="https://eips.ethereum.org/EIPS/eip-170">EIP 170</a>. Default value: <code>false</code></p>
+<h4 id="forking"><code>forking</code></h4>
+<p>An object that describes the <a href="../guides/mainnet-forking.md">forking</a> configuration that can have the following fields:</p>
+<ul>
+<li><code>url</code>: a URL that points to a JSON-RPC node with state that you want to fork off. There's no default value for this field. It must be provided for the fork to work.</li>
+<li><code>blockNumber</code>: an optional number to pin which block to fork from. If no value is provided, the latest block is used.</li>
+<li><code>enabled</code>: an optional boolean to switch on or off the fork functionality. Default value: <code>true</code> if <code>url</code> is set, <code>false</code> otherwise.</li>
+</ul>
+<h4 id="chains"><code>chains</code></h4>
+<p>An object that configures chain-specific options. Each key is a number representing a chain ID, and each value is an object configuring the chain with that ID. In the inner object, the following fields are supported:</p>
+<ul>
+<li><code>hardforkHistory</code>: an object whose keys are strings representing hardfork names (eg <code>&quot;london&quot;</code>, <code>&quot;berlin&quot;</code>) and whose values are numbers specifying the block at which that hardfork was activated.</li>
+</ul>
+<p>The default value includes configurations for several well known chains (eg mainnet, chain ID <code>1</code>); using this field is only useful when forking unusual networks. The user may override the defaults for some chain ID's while leaving the defaults in place for other chain ID's. Overriding the default for a chain ID will replace the entire configuration for that chain.</p>
+<p>For more details, see <a href="../guides/mainnet-forking.md#using-a-custom-hardfork-history">Using a custom hardfork history</a>.</p>
+<h4 id="mingasprice"><code>minGasPrice</code></h4>
+<p>The minimum <code>gasPrice</code> that a transaction must have. This field must not be present if the <code>&quot;hardfork&quot;</code> is <code>&quot;london&quot;</code> or a later one. Default value: <code>&quot;0&quot;</code>.</p>
+<h4 id="initialbasefeepergas"><code>initialBaseFeePerGas</code></h4>
+<p>The <code>baseFeePerGas</code> of the first block. Note that when forking a remote network, the &quot;first block&quot; is the one immediately after the block you forked from. This field must not be present if the <code>&quot;hardfork&quot;</code> is not <code>&quot;london&quot;</code> or a later one. Default value: <code>&quot;1000000000&quot;</code> if not forking. When forking a remote network, if the remote network uses EIP-1559, the first local block will use the right <code>baseFeePerGas</code> according to the EIP, otherwise <code>&quot;10000000000&quot;</code> is used.</p>
+<ul>
+<li><code>coinbase</code>: The address used as coinbase in new blocks. Default value: <code>&quot;0xc014ba5ec014ba5ec014ba5ec014ba5ec014ba5e&quot;</code>.</li>
+</ul>
+<h3 id="mining-modes">Mining modes</h3>
+<p>You can configure the mining behavior under your Hardhat Network settings:</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-entity z-name z-label z-ts">networks</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+  <span class="z-entity z-name z-label z-ts">hardhat</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+    <span class="z-entity z-name z-label z-ts">mining</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+      <span class="z-entity z-name z-label z-ts">auto</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-constant z-language z-boolean z-false z-ts">false</span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+      <span class="z-entity z-name z-label z-ts">interval</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-constant z-numeric z-decimal z-ts">5000</span>
+    <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+  <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+<span class="z-punctuation z-definition z-block z-ts">}</span></span>
+</span></code></pre>
+<p>In this example, automining is disabled and interval mining is set so that a new block is generated every 5 seconds. You can also configure interval mining to generate a new block after a random delay:</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-entity z-name z-label z-ts">networks</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+  <span class="z-entity z-name z-label z-ts">hardhat</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+    <span class="z-entity z-name z-label z-ts">mining</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+      <span class="z-entity z-name z-label z-ts">auto</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-constant z-language z-boolean z-false z-ts">false</span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+      <span class="z-entity z-name z-label z-ts">interval</span><span class="z-punctuation z-separator z-label z-ts">:</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span><span class="z-constant z-numeric z-decimal z-ts">3000</span><span class="z-punctuation z-separator z-comma z-ts">,</span> <span class="z-constant z-numeric z-decimal z-ts">6000</span><span class="z-meta z-brace z-square z-ts">]</span></span>
+    <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+  <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+<span class="z-punctuation z-definition z-block z-ts">}</span></span>
+</span></code></pre>
+<p>In this case, a new block will be mined after a random delay of between 3 and 6 seconds. For example, the first block could be mined after 4 seconds, the second block 5.5 seconds after that, and so on.</p>
+<p>See also <a href="../explanation/mining-modes.md">Mining Modes</a>.</p>
+<h4 id="manual-mining">Manual mining</h4>
+<p>You can disable both mining modes like this:</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-entity z-name z-label z-ts">networks</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+  <span class="z-entity z-name z-label z-ts">hardhat</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+    <span class="z-entity z-name z-label z-ts">mining</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-meta z-block z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+      <span class="z-entity z-name z-label z-ts">auto</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-constant z-language z-boolean z-false z-ts">false</span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+      <span class="z-entity z-name z-label z-ts">interval</span><span class="z-punctuation z-separator z-label z-ts">:</span> <span class="z-constant z-numeric z-decimal z-ts">0</span>
+    <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+  <span class="z-punctuation z-definition z-block z-ts">}</span></span>
+<span class="z-punctuation z-definition z-block z-ts">}</span></span>
+</span></code></pre>
+<p>This means that no new blocks will be mined by the Hardhat Network, but you can manually mine new blocks using the <code>evm_mine</code> RPC method. This will generate a new block that will include as many pending transactions as possible.</p>
+<h4 id="transaction-ordering">Transaction ordering</h4>
+<p>Hardhat Network can sort mempool transactions in two different ways. How they are sorted will alter which transactions from the mempool get included in the next block, and in which order.</p>
+<p>The first ordering mode, called <code>&quot;priority&quot;</code>, mimics Geth's behavior. This means that it prioritizes transactions based on the fees paid to the miner. This is the default.</p>
+<p>The second ordering mode, called <code>&quot;fifo&quot;</code>, keeps the mempool transactions sorted in the order they arrive.</p>
+<p>You can change the ordering mode with:</p>
+<pre data-lang="json" class="language-json z-code"><code class="language-json" data-lang="json"><span class="z-source z-json">networks: <span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+  <span class="z-invalid z-illegal z-expected-mapping-key z-json">h</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">a</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">r</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">d</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">h</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">a</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">t</span><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+    <span class="z-invalid z-illegal z-expected-mapping-key z-json">m</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">i</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">n</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">i</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">n</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">g</span><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+      <span class="z-invalid z-illegal z-expected-mapping-key z-json">m</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">e</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">m</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">p</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">o</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">o</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">l</span><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+        <span class="z-invalid z-illegal z-expected-mapping-key z-json">o</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">r</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">d</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">e</span><span class="z-invalid z-illegal z-expected-mapping-key z-json">r</span><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>fifo<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span>
+      <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span>
+    <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span>
+  <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span>
+<span class="z-punctuation z-section z-mapping z-end z-json">}</span></span>
+</span></code></pre>
+<h2 id="console-log"><code>console.log</code></h2>
+<ul>
+<li>You can use it in calls and transactions. It works with <code>view</code> functions, but not in <code>pure</code> ones.</li>
+<li>It always works, regardless of the call or transaction failing or being successful.</li>
+<li>To use it you need to import <code>hardhat/console.sol</code>.</li>
+<li>You can call <code>console.log</code> with up to 4 parameters in any order of following types:
+<ul>
+<li><code>uint</code></li>
+<li><code>string</code></li>
+<li><code>bool</code></li>
+<li><code>address</code></li>
+</ul>
+</li>
+<li>There's also the single parameter API for the types above, and additionally <code>bytes</code>, <code>bytes1</code>... up to <code>bytes32</code>:
+<ul>
+<li><code>console.logInt(int i)</code></li>
+<li><code>console.logUint(uint i)</code></li>
+<li><code>console.logString(string memory s)</code></li>
+<li><code>console.logBool(bool b)</code></li>
+<li><code>console.logAddress(address a)</code></li>
+<li><code>console.logBytes(bytes memory b)</code></li>
+<li><code>console.logBytes1(bytes1 b)</code></li>
+<li><code>console.logBytes2(bytes2 b)</code></li>
+<li>...</li>
+<li><code>console.logBytes32(bytes32 b)</code></li>
+</ul>
+</li>
+<li><code>console.log</code> implements the same formatting options that can be found in Node.js' <a href="https://nodejs.org/dist/latest-v12.x/docs/api/console.html#console_console_log_data_args"><code>console.log</code></a>, which in turn uses <a href="https://nodejs.org/dist/latest-v12.x/docs/api/util.html#util_util_format_format_args"><code>util.format</code></a>.
+<ul>
+<li>Example: <code>console.log(&quot;Changing owner from %s to %s&quot;, currentOwner, newOwner)</code></li>
+</ul>
+</li>
+<li><code>console.log</code> is implemented in standard Solidity and then detected in Hardhat Network. This makes its compilation work with any other tools (like Remix, Waffle or Truffle).</li>
+<li><code>console.log</code> calls can run in other networks, like mainnet, kovan, ropsten, etc. They do nothing in those networks, but do spend a minimal amount of gas.</li>
+<li><code>console.log</code> output can also be viewed for testnets and mainnet via <a href="https://tenderly.co/">Tenderly</a>.</li>
+<li><code>console.log</code> works by sending static calls to a well-known contract address. At runtime, Hardhat Network detects calls to that address, decodes the input data to the calls, and writes it to the console.</li>
+</ul>
+<h2 id="initial-state">Initial State</h2>
+<p>Hardhat Network is initialized by default in this state:</p>
+<ul>
+<li>A brand new blockchain, just with the genesis block.</li>
+<li>20 accounts with 10000 ETH each, generated with the mnemonic <code>&quot;test test test test test test test test test test test junk&quot;</code>. Their addresses are:
+<ul>
+<li><code>0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266</code></li>
+<li><code>0x70997970C51812dc3A010C7d01b50e0d17dc79C8</code></li>
+<li><code>0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC</code></li>
+<li><code>0x90F79bf6EB2c4f870365E785982E1f101E93b906</code></li>
+<li><code>0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65</code></li>
+<li><code>0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc</code></li>
+<li><code>0x976EA74026E726554dB657fA54763abd0C3a0aa9</code></li>
+<li><code>0x14dC79964da2C08b23698B3D3cc7Ca32193d9955</code></li>
+<li><code>0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f</code></li>
+<li><code>0xa0Ee7A142d267C1f36714E4a8F75612F20a79720</code></li>
+<li><code>0xBcd4042DE499D14e55001CcbB24a551F3b954096</code></li>
+<li><code>0x71bE63f3384f5fb98995898A86B02Fb2426c5788</code></li>
+<li><code>0xFABB0ac9d68B0B445fB7357272Ff202C5651694a</code></li>
+<li><code>0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec</code></li>
+<li><code>0xdF3e18d64BC6A983f673Ab319CCaE4f1a57C7097</code></li>
+<li><code>0xcd3B766CCDd6AE721141F452C550Ca635964ce71</code></li>
+<li><code>0x2546BcD3c84621e976D8185a91A922aE77ECEc30</code></li>
+<li><code>0xbDA5747bFD65F08deb54cb465eB87D40e51B197E</code></li>
+<li><code>0xdD2FD4581271e230360230F9337D5c0430Bf44C0</code></li>
+<li><code>0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199</code></li>
+</ul>
+</li>
+</ul>
+<p>To customise it, take a look at <a href="/config/README.md#hardhat-network">the configuration section</a>.</p>
+<h2 id="json-rpc-methods-support">JSON-RPC methods support</h2>
+<h3 id="standard-methods">Standard methods</h3>
+<h4 id="debug-tracetransaction"><code>debug_traceTransaction</code></h4>
+<p>Get debug traces of already-mined transactions.</p>
+<p>To get a trace, call this method with the hash of the transaction as its argument:</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-meta z-var z-expr z-ts"><span class="z-storage z-type z-ts">const</span> <span class="z-meta z-var-single-variable z-expr z-ts"><span class="z-meta z-definition z-variable z-ts"><span class="z-variable z-other z-constant z-ts">trace</span></span> </span><span class="z-keyword z-operator z-assignment z-ts">=</span> <span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">hre</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>debug_traceTransaction<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x123...<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+<span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span></span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+</span></code></pre>
+<p>You can also selectively disable some properties in the list of steps:</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-meta z-var z-expr z-ts"><span class="z-storage z-type z-ts">const</span> <span class="z-meta z-var-single-variable z-expr z-ts"><span class="z-meta z-definition z-variable z-ts"><span class="z-variable z-other z-constant z-ts">trace</span></span> </span><span class="z-keyword z-operator z-assignment z-ts">=</span> <span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">hre</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>debug_traceTransaction<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x123...<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+  <span class="z-meta z-objectliteral z-ts"><span class="z-punctuation z-definition z-block z-ts">{</span>
+    <span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts">disableMemory</span></span><span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts"><span class="z-punctuation z-separator z-key-value z-ts">:</span></span> <span class="z-constant z-language z-boolean z-true z-ts">true</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+    <span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts">disableStack</span></span><span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts"><span class="z-punctuation z-separator z-key-value z-ts">:</span></span> <span class="z-constant z-language z-boolean z-true z-ts">true</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+    <span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts">disableStorage</span></span><span class="z-meta z-object z-member z-ts"><span class="z-meta z-object-literal z-key z-ts"><span class="z-punctuation z-separator z-key-value z-ts">:</span></span> <span class="z-constant z-language z-boolean z-true z-ts">true</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+  <span class="z-punctuation z-definition z-block z-ts">}</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+<span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span></span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+</span></code></pre>
+<h3 id="hardhat-network-methods">Hardhat network methods</h3>
+<h4 id="hardhat-addcompilationresult"><code>hardhat_addCompilationResult</code></h4>
+<p>Add information about compiled contracts</p>
+<h4 id="hardhat-droptransaction"><code>hardhat_dropTransaction</code></h4>
+<p>Remove a transaction from the mempool</p>
+<!-- intentionally undocumented, internal method:
+#### `hardhat_getStackTraceFailuresCount`
+-->
+<h4 id="hardhat-impersonateaccount"><code>hardhat_impersonateAccount</code></h4>
+<p>Hardhat Network allows you to send transactions impersonating specific account and contract addresses.</p>
+<p>To impersonate an account use the this method, passing the address to impersonate as its parameter:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">hre</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-entity z-name z-function z-tsx">request</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-meta z-objectliteral z-tsx"><span class="z-punctuation z-definition z-block z-tsx">{</span>
+  <span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx">method</span></span><span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx"><span class="z-punctuation z-separator z-key-value z-tsx">:</span></span> <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_impersonateAccount<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+  <span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx">params</span></span><span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx"><span class="z-punctuation z-separator z-key-value z-tsx">:</span></span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x364d6D0333432C3Ac016Ca832fb8594A8cE43Ca6<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-meta z-brace z-square z-tsx">]</span></span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+<span class="z-punctuation z-definition z-block z-tsx">}</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<p>If you are using <a href="https://github.com/nomiclabs/hardhat/tree/master/packages/hardhat-ethers"><code>hardhat-ethers</code></a>, call <code>getSigner</code> after impersonating the account:</p>
+<pre class="z-code"><code><span class="z-text z-plain">const signer = await ethers.getSigner(&quot;0x364d6D0333432C3Ac016Ca832fb8594A8cE43Ca6&quot;)
+signer.sendTransaction(...)
+</span></code></pre>
+<p>Call <a href="https://www.web3rpc.io/#hardhat-stopimpersonatingaccount"><code>hardhat_stopImpersonatingAccount</code></a> to stop impersonating.</p>
+<!-- intentionally undocumented, internal method:
+#### `hardhat_intervalMine`
+-->
+<h4 id="hardhat-getautomine"><code>hardhat_getAutomine</code></h4>
+<p>Returns <code>true</code> if automatic mining is enabled, and <code>false</code> otherwise. See <a href="../explanation/mining-modes.md">Mining Modes</a> to learn more.</p>
+<h4 id="hardhat-mine"><code>hardhat_mine</code></h4>
+<p>Sometimes you may want to advance the latest block number of the Hardhat Network by a large number of blocks. One way to do this would be to call the <code>evm_mine</code> RPC method multiple times, but this is too slow if you want to mine thousands of blocks. The <code>hardhat_mine</code> method can mine any number of blocks at once, in constant time. (It exhibits the same performance no matter how many blocks are mined.)</p>
+<p><code>hardhat_mine</code> accepts two parameters, both of which are optional. The first parameter is the number of blocks to mine, and defaults to 1. The second parameter is the interval between the timestamps of each block, <em>in seconds</em>, and it also defaults to 1. (The interval is applied only to blocks mined in the given method invocation, not to blocks mined afterwards.)</p>
+<pre data-lang="js" class="language-js z-code"><code class="language-js" data-lang="js"><span class="z-source z-ts"><span class="z-comment z-line z-double-slash z-ts"><span class="z-punctuation z-definition z-comment z-ts">//</span></span><span class="z-comment z-line z-double-slash z-ts"> mine 256 blocks</span>
+<span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">hre</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>hardhat_mine<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x100<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+
+<span class="z-comment z-line z-double-slash z-ts"><span class="z-punctuation z-definition z-comment z-ts">//</span></span><span class="z-comment z-line z-double-slash z-ts"> mine 1000 blocks with an interval of 1 minute</span>
+<span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">hre</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>hardhat_mine<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x3e8<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span> <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x3c<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+</span></code></pre>
+<p>Note that most blocks mined via this method (all except for the final one) may not technically be valid blocks. Specifically, they have an invalid parent hash, the coinbase account will not have been credited with block rewards, and the <code>baseFeePerGas</code> will be incorrect. (The final block in a sequence produced by <code>hardhat_mine</code> will always be fully valid.)</p>
+<p>Also note that blocks created via <code>hardhat_mine</code> may not trigger new-block events, such as filters created via <code>eth_newBlockFilter</code> and WebSocket subscriptions to new-block events.</p>
+<h4 id="hardhat-reset"><code>hardhat_reset</code></h4>
+<p>See the <a href="../guides/mainnet-forking.md">Mainnet Forking guide</a></p>
+<h4 id="hardhat-setbalance"><code>hardhat_setBalance</code></h4>
+<p>Modifies the balance of an account.</p>
+<p>For example:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-support z-function z-tsx">send</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_setBalance<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x1000<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+<span class="z-meta z-brace z-square z-tsx">]</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<p>This will result in account <code>0x0d20...000B</code> having a balance of 4096 wei.</p>
+<h4 id="hardhat-setcode"><code>hardhat_setCode</code></h4>
+<p>Modifies the bytecode stored at an account's address.</p>
+<p>For example:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-support z-function z-tsx">send</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_setCode<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0xa1a2a3...<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+<span class="z-meta z-brace z-square z-tsx">]</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<p>This will result in account <code>0x0d20...000B</code> becoming a smart contract with bytecode <code>a1a2a3....</code> If that address was already a smart contract, then its code will be replaced by the specified one.</p>
+<h4 id="hardhat-setcoinbase"><code>hardhat_setCoinbase</code></h4>
+<p>Sets the coinbase address to be used in new blocks.</p>
+<p>For example:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-support z-function z-tsx">send</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_setCoinbase<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+<span class="z-meta z-brace z-square z-tsx">]</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<p>This will result in account <code>0x0d20...000B</code> being used as miner/coinbase in every new block.</p>
+<h4 id="hardhat-setloggingenabled"><code>hardhat_setLoggingEnabled</code></h4>
+<p>Enable or disable logging in Hardhat Network</p>
+<h4 id="hardhat-setmingasprice"><code>hardhat_setMinGasPrice</code></h4>
+<p>Change the minimum gas price accepted by the network (in wei)</p>
+<h4 id="hardhat-setnextblockbasefeepergas"><code>hardhat_setNextBlockBaseFeePerGas</code></h4>
+<p>Sets the base fee of the next block.</p>
+<p>For example:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-support z-function z-tsx">send</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_setNextBlockBaseFeePerGas<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span>
+  <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x2540be400<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span> <span class="z-comment z-line z-double-slash z-tsx"><span class="z-punctuation z-definition z-comment z-tsx">//</span></span><span class="z-comment z-line z-double-slash z-tsx"> 10 gwei</span>
+<span class="z-meta z-brace z-square z-tsx">]</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<p>This only affects the next block; the base fee will keep being updated in each subsequent block according to <a href="https://eips.ethereum.org/EIPS/eip-1559">EIP-1559</a>.</p>
+<h4 id="hardhat-setnonce"><code>hardhat_setNonce</code></h4>
+<p>Modifies an account's nonce by overwriting it.</p>
+<p>For example:</p>
+<pre data-lang="typescript" class="language-typescript z-code"><code class="language-typescript" data-lang="typescript"><span class="z-source z-ts"><span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>hardhat_setNonce<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x21<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+<span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+</span></code></pre>
+<p>This will result in account <code>0x0d20...000B</code> having a nonce of 33.</p>
+<p>Throws an <code>InvalidInputError</code> if nonce is smaller than the current one. The reason for this restriction is to avoid collisions when deploying contracts using the same nonce more than once.</p>
+<p>You can only use this method to increase the nonce of an account; you can't set a lower value than the account's current nonce.</p>
+<h4 id="hardhat-setstorageat"><code>hardhat_setStorageAt</code></h4>
+<p>Writes a single position of an account's storage.</p>
+<p>For example:</p>
+<pre data-lang="typescript" class="language-typescript z-code"><code class="language-typescript" data-lang="typescript"><span class="z-source z-ts"><span class="z-keyword z-control z-flow z-ts">await</span> <span class="z-meta z-function-call z-ts"><span class="z-variable z-other z-object z-ts">network</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-variable z-other z-object z-property z-ts">provider</span><span class="z-punctuation z-accessor z-ts">.</span><span class="z-support z-function z-ts">send</span></span><span class="z-meta z-brace z-round z-ts">(</span><span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>hardhat_setStorageAt<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span><span class="z-meta z-array z-literal z-ts"> <span class="z-meta z-brace z-square z-ts">[</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x0<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+  <span class="z-string z-quoted z-double z-ts"><span class="z-punctuation z-definition z-string z-begin z-ts">&quot;</span>0x0000000000000000000000000000000000000000000000000000000000000001<span class="z-punctuation z-definition z-string z-end z-ts">&quot;</span></span><span class="z-punctuation z-separator z-comma z-ts">,</span>
+<span class="z-meta z-brace z-square z-ts">]</span></span><span class="z-meta z-brace z-round z-ts">)</span><span class="z-punctuation z-terminator z-statement z-ts">;</span>
+</span></code></pre>
+<p>This will set the contract's first storage position (at index <code>0x0</code>) to 1.</p>
+<p>The mapping between a smart contract's variables and its storage position is not straightforward except in some very simple cases. For example, if you deploy this contract:</p>
+<pre data-lang="solidity" class="language-solidity z-code"><code class="language-solidity" data-lang="solidity"><span class="z-text z-plain">contract Foo {
+  uint public x;
+}
+</span></code></pre>
+<p>And you set the first storage position to 1 (as shown in the previous snippet), then calling <code>foo.x()</code> will return 1.</p>
+<p>The storage position index must not exceed 2^256, and the value to write must be exactly 32 bytes long.</p>
+<h4 id="hardhat-stopimpersonatingaccount"><code>hardhat_stopImpersonatingAccount</code></h4>
+<p>Use this method to stop impersonating an account after having previously used <a href="https://www.web3rpc.io/#hardhat-impersonateaccount"><code>hardhat_impersonateAccount</code></a>, like:</p>
+<pre data-lang="tsx" class="language-tsx z-code"><code class="language-tsx" data-lang="tsx"><span class="z-source z-tsx"><span class="z-keyword z-control z-flow z-tsx">await</span> <span class="z-meta z-function-call z-tsx"><span class="z-variable z-other z-object z-tsx">hre</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">network</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-variable z-other z-object z-property z-tsx">provider</span><span class="z-punctuation z-accessor z-tsx">.</span><span class="z-entity z-name z-function z-tsx">request</span></span><span class="z-meta z-brace z-round z-tsx">(</span><span class="z-meta z-objectliteral z-tsx"><span class="z-punctuation z-definition z-block z-tsx">{</span>
+  <span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx">method</span></span><span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx"><span class="z-punctuation z-separator z-key-value z-tsx">:</span></span> <span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>hardhat_stopImpersonatingAccount<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+  <span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx">params</span></span><span class="z-meta z-object z-member z-tsx"><span class="z-meta z-object-literal z-key z-tsx"><span class="z-punctuation z-separator z-key-value z-tsx">:</span></span><span class="z-meta z-array z-literal z-tsx"> <span class="z-meta z-brace z-square z-tsx">[</span><span class="z-string z-quoted z-double z-tsx"><span class="z-punctuation z-definition z-string z-begin z-tsx">&quot;</span>0x364d6D0333432C3Ac016Ca832fb8594A8cE43Ca6<span class="z-punctuation z-definition z-string z-end z-tsx">&quot;</span></span><span class="z-meta z-brace z-square z-tsx">]</span></span></span><span class="z-punctuation z-separator z-comma z-tsx">,</span>
+<span class="z-punctuation z-definition z-block z-tsx">}</span></span><span class="z-meta z-brace z-round z-tsx">)</span><span class="z-punctuation z-terminator z-statement z-tsx">;</span>
+</span></code></pre>
+<h3 id="special-testing-debugging-methods">Special testing/debugging methods</h3>
+<h4 id="evm-increasetime-1"><code>evm_increaseTime</code></h4>
+<p>Same as Ganache.</p>
+<h4 id="evm-mine-1"><code>evm_mine</code></h4>
+<p>Same as Ganache</p>
+<h4 id="evm-revert-1"><code>evm_revert</code></h4>
+<p>Same as Ganache.</p>
+<h4 id="evm-setautomine"><code>evm_setAutomine</code></h4>
+<p>Enables or disables, based on the single boolean argument, the automatic mining of new blocks with each new transaction submitted to the network. You can use <a href="https://www.web3rpc.io/#hardhat-getautomine"><code>hardhat_getAutomine</code></a> to get the current value. See also <a href="../explanation/mining-modes.md">Mining Modes</a>.</p>
+<h4 id="evm-setblockgaslimit"><code>evm_setBlockGasLimit</code></h4>
+<h4 id="evm-setintervalmining"><code>evm_setIntervalMining</code></h4>
+<p>Enables (with a numeric argument greater than 0) or disables (with a numeric argument equal to 0), the automatic mining of blocks at a regular interval of milliseconds, each of which will include all pending transactions. See also <a href="../explanation/mining-modes.md">Mining Modes</a>.</p>
+<h4 id="evm-setnextblocktimestamp"><code>evm_setNextBlockTimestamp</code></h4>
+<p>This method works like <code>evm_increaseTime</code>, but takes the exact timestamp that you want in the next block, and increases the time accordingly.</p>
+<h4 id="evm-snapshot-1"><code>evm_snapshot</code></h4>
+<p>Same as <a href="https://github.com/trufflesuite/ganache/blob/ef1858d5d6f27e4baeb75cccd57fb3dc77a45ae8/src/chains/ethereum/ethereum/RPC-METHODS.md#evm_snapshot">Ganache</a>.</p>
+<p>Snapshot the state of the blockchain at the current block. Takes no parameters. Returns the id of the snapshot that was created. A snapshot can only be reverted once. After a successful <code>evm_revert</code>, the same snapshot id cannot be used again. Consider creating a new snapshot after each <code>evm_revert</code> if you need to revert to the same point multiple times.</p>
 
 
     <hr/>

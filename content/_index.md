@@ -314,8 +314,8 @@ Note that when using `ethers` this value will not be applied.
 
 This field can be configured as one of these:
 
-- An object describing an [HD wallet](#hd-wallet-config). This is the default. It can have any of the following fields:
-  - `mnemonic`: a 12 or 24 word mnemonic phrase as defined by BIP39. Default value: `"test test test test test test test test test test test junk"`
+- An object describing an [HD wallet]. This is the default. It can have any of the following fields:
+  - `mnemonic`: a 12 or 24 word mnemonic phrases as defined by BIP39. Default value: `"test test test test test test test test test test test junk"`
   - `initialIndex`: The initial index to derive. Default value: `0`.
   - `path`: The HD parent of all the derived keys. Default value: `"m/44'/60'/0'/0"`.
   - `count`: The number of accounts to derive. Default value: `20`.
