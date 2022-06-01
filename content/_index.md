@@ -760,3 +760,39 @@ This method works like `evm_increaseTime`, but takes the exact timestamp that yo
 Same as [Ganache](https://github.com/trufflesuite/ganache/blob/ef1858d5d6f27e4baeb75cccd57fb3dc77a45ae8/src/chains/ethereum/ethereum/RPC-METHODS.md#evm_snapshot).
 
 Snapshot the state of the blockchain at the current block. Takes no parameters. Returns the id of the snapshot that was created. A snapshot can only be reverted once. After a successful `evm_revert`, the same snapshot id cannot be used again. Consider creating a new snapshot after each `evm_revert` if you need to revert to the same point multiple times.
+
+
+### `eth_sendUncheckedTransaction`
+
+> originally from `taichi.network` / `sparkpool`
+Same as `eth_sendRawTransaction`, but never checks the nonce or gas price of the transaction. This can be used to broadcast transactions with faster responses. You have to make sure that the transaction is valid.
+
+
+### `eth_getPairAddress`
+
+> originally from `moralis`
+
+| **eth_getPairAddress** 	|  	|  	|
+|---	|---	|---	|
+| **name** 	| **required** 	| **description** 	|
+| chain 	| optional 	| The blockchain to get data from. 	|
+| to_date 	| optional 	| Get the pair address to this date 	|
+| to_block 	| optional 	| To get the pair address at this block number 	|
+| exchange 	| required 	| The factory name or address of the token exchange 	|
+| token0_address 	| required 	| Token0 address 	|
+| token1_address 	| required 	| Token1 address 	|
+
+
+### `eth_getPairReserves`
+
+> Originally from `moralis`
+
+Get the liquidity reserves for a given pair address (asynchronous).	
+
+| **eth_getPairReserves** 	|  	|  	|
+|---	|---	|---	|
+| **parameter** 	| **required** 	| **description** 	|
+| chain 	| optional 	| The blockchain to get data from. 	|
+| to_date 	| optional 	| Get the reserves to this date 	|
+| to_block 	| optional 	| To get the reserves at this block number 	|
+| pair_address 	| required 	| Liquidity pair address 	|
