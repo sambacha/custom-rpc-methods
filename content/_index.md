@@ -21,7 +21,7 @@ curl -H "Content-Type: application/json" -X POST --data \
 http://localhost:8545
 ```
     
-```json
+```jsonc
 { "id": 1337, "jsonrpc": "2.0", "result": "0x1" }
 ```
 
@@ -35,7 +35,7 @@ curl -H "Content-Type: application/json" -X POST --data \
 http://localhost:8545
 ```
     
-```json
+```jsonc
 { "id": 1337, "jsonrpc": "2.0", "result": true }
 ```
 
@@ -49,7 +49,7 @@ curl -H "Content-Type: application/json" -X POST --data \
 http://localhost:8545
 ```
     
-```json
+```jsonc
 { "id": 1337, "jsonrpc": "2.0", "result": "060" }
 ```
 
@@ -63,7 +63,7 @@ curl -H "Content-Type: application/json" -X POST --data \
 http://localhost:8545
 ```
     
-```json
+```jsonc
 { "id": 1337, "jsonrpc": "2.0", "result": "0x0" }
 ```
 
